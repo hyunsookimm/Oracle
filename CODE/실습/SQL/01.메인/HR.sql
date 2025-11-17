@@ -82,7 +82,7 @@ WHERE job_id = 'FI_ACCOUNT'
 -- 테이블 EMPLOYEES 의 JOB_ID가 ‘FI_ACCOUNT’ 이거나 ‘IT_PROG’ 인 
 -- 사원의 모든 컬럼을 조회하는 SQL 문을 작성하시오.
 -- 단, IN 키워드를 사용하시오.
-SELECT * 
+SELECT *
 FROM employees 
 WHERE job_id IN ('FI_ACCOUNT','IT_PROG')
 ;
