@@ -1,0 +1,75 @@
+-- 주문량이 많은 아이스크림들 조회하기
+-- 테이블
+-- 1. FIRST_HALF
+-- 2. JULY
+-- 공통 컬럼 : FLAVOR, SHIPMENT_ID
+
+-- 7월 아이스크림 총 주문령과 상반기의 아이스크림 총 주문량을
+-- 더한 값이 큰 순서대로 상위 3개의 맛을 조회
+
+-- 1단계. 두 테이블의 데이터를(맛, 주문량)를 하나로 조회 
+SELECT FLAVOR, TOTAL_ORDER
+FROM FIRST_HALF
+UNION ALL
+SELECT FLAVOR, TOTAL_ORDER
+FROM JULY
+;
+
+-- 2단계. 합친 데이터를 맛별로 주문량 합계 조회
+--     + 주문량 합계를 기준으로 내림차순
+SELECT FLAVOR
+FROM (
+      SELECT FLAVOR, TOTAL_ORDER
+      FROM FIRST_HALF
+      UNION ALL
+      SELECT FLAVOR, TOTAL_ORDER
+      FROM JULY
+     )
+GROUP BY FLAVOR
+ORDER BY SUM(TOTAL_ORDER) DESC
+;
+
+-- 3단계 : 상위 3개의 맛을 조회하시오.
+SELECT FLAVOR 
+FROM (
+      SELECT FLAVOR
+      FROM (
+            SELECT FLAVOR, TOTAL_ORDER
+            FROM FIRST_HALF
+            UNION ALL
+            SELECT FLAVOR, TOTAL_ORDER
+            FROM JULY
+           )
+           GROUP BY FLAVOR
+           ORDER BY SUM(TOTAL_ORDER) DESC
+     )
+WHERE ROWNUM <= 3 
+;
+
+-- 방법 2
+SELECT FLAVOR
+FROM (
+      SELECT FLAVOR, TOTAL_ORDER
+      FROM FIRST_HALF
+      UNION ALL
+      SELECT FLAVOR, TOTAL_ORDER
+      FROM JULY
+     )
+GROUP BY FLAVOR
+ORDER BY SUM(TOTAL_ORDER) DESC
+FETCH FIRST 3 ROWS ONLY
+;
+
+-- 맛별로 주문량합계 상위 4~6등을 조회하시오
+SELECT FLAVOR
+FROM (
+      SELECT FLAVOR, TOTAL_ORDER
+      FROM FIRST_HALF
+      UNION ALL
+      SELECT FLAVOR, TOTAL_ORDER
+      FROM JULY
+     )
+GROUP BY FLAVOR
+ORDER BY SUM(TOTAL_ORDER) DESC
+OFFSET 3 ROWS FETCH NEXT 3 ROWS ONLY 
+;
